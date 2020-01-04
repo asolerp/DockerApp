@@ -9,4 +9,16 @@ script:
   - docker run -e CI=true asolerp/react-test npm test
 
 after_success:
-  - docker build -t asolerp/docker-app ./client
+  - docker build -t asolerp/multi-client ./client
+  - docker build -t asolerp/multi-nginx ./nginx
+  - docker build -t asolerp/multi-server ./server
+  - docker build -t asolerp/multi-worker ./worker
+
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+  # Take those images and push them to docker hub
+  - docker push asolerp/multi-client
+  - docker push asolerp/multi-nginx
+  - docker push asolerp/multi-server
+  - docker push asolerp/multi-worker
